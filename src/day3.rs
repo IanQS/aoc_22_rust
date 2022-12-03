@@ -1,5 +1,14 @@
+//! Problem 1
+//!     **Note**: I used a dict when I should have used a set
+//!     Iterate through the strings by first splitting them in 1/2
+//!     Find the intersection and get the idx before summing
+//! Problem 2:
+//!     **Note**: same as earlier but I'm now doing things a little different
+//!
+
 use std::fs;
 use std::collections::HashMap;
+use std::collections::HashSet;
 use crate::day3::constants::ASCII;
 
 mod constants;
@@ -15,7 +24,7 @@ fn read_file(f_name: &str) -> Vec<String> {
         .filter(|x| !x.is_empty())
         .collect::<Vec<String>>();
 }
-
+#[allow(dead_code)]
 fn split_str_into_map(my_str: &str, h_map: &mut HashMap<char, i32>) {
     my_str.chars().fold(
         h_map,
@@ -26,7 +35,7 @@ fn split_str_into_map(my_str: &str, h_map: &mut HashMap<char, i32>) {
     );
     return;
 }
-
+#[allow(dead_code)]
 pub fn part1_calculate_priorities(f_name: &str) -> usize {
     let contents = read_file(f_name);
 
@@ -60,4 +69,35 @@ pub fn part1_calculate_priorities(f_name: &str) -> usize {
                 return sum_ret;
             }
         ).sum();
+}
+
+
+pub fn part2_calculate_priorities_triples(f_name: &str) -> usize{
+    // First read in all the lines then split by 3
+    let contents = read_file(f_name);
+
+    // for each entry, we get the set associated with it
+    let vec_set: Vec<HashSet<char>> = contents.iter()
+        .map(|x| {
+            x.chars().into_iter().collect()
+        })
+        .collect();
+
+    let mut total_priorities = 0;
+    for i in (0..vec_set.len()).step_by(3){
+        let fst = &vec_set[i];
+        let sec = &vec_set[i+1];
+        let third = &vec_set[i+2];
+        let intersect = fst.
+            intersection(sec).into_iter().filter(
+            |x| third.contains(x)
+        ).into_iter();
+
+        for (i, chr) in intersect.enumerate(){
+            total_priorities += ASCII.iter().position(|ascii_chars| ascii_chars == chr).unwrap();
+            assert!(i == 0, "More than 1 element in the intersection");
+        }
+        total_priorities += 1;
+    }
+    return total_priorities;
 }
