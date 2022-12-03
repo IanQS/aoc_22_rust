@@ -1,11 +1,9 @@
-mod day1;
-mod day2;
+// mod day1;
+// mod day2;
+mod day3;
 
 fn main() {
-    let result: i32 = day2::find_sum_top_n_from_file(
-        "./data_folder/day_1_2.txt",
-        3
-    );
-    println!("Final result: {}", result);
+    let result = day3::part1_calculate_priorities("./data_folder/day_3.txt");
+    println!("Day 3: Part 1: {}", result);
 
 }
