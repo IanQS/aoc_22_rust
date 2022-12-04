@@ -6,57 +6,61 @@ struct Range {
     end: i32,
 }
 
+
 impl fmt::Display for Range {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result{
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "({}, {})", self.start, self.end)
     }
 }
 
 fn read_file(f_name: &str) -> Vec<String> {
-    let v: String = fs::read_to_string(f_name)
-        .expect("Error reading file");
+    let read_str: Vec<String> = fs::read_to_string(f_name)
+        .expect("Error reading file")
+        .split("\n")
+        .filter(|x| !x.is_empty())
+        .map(|x| x.to_string())
 
-    let b: Vec<&str> = v
-        // split on ,newlines. -> {a-b, c-d,}, {range_2}, {range_3},...
-        .split(",\n")
-        .flat_map(
-            |two_ranges| two_ranges.split(",").collect::<Vec<&str>>() // a-b then c-d
-        )
+        .collect();
+
+    let replaced_one: Vec<String> = read_str.iter()
+        .map(|x| x.replace("-", " "))
+        .map(|x| x.replace(",", " "))
+        .collect();
+
+    return replaced_one;
+}
+
+pub fn problem1(f_name: &str) -> usize {
+    let split_values = read_file(f_name);
+
+    let filtered_results: Vec<bool> = split_values.iter()
+        // Generate the two ranges Range1(start1, end1) and Range2(start2, end2)
+        .map(|line| {
+            let split_ln: Vec<i32> = line.split(" ").map(|v| v.parse::<i32>().unwrap()).collect();
+
+
+            let (s1, e1, s2, e2) = match split_ln[..] {
+                [s1, e1, s2, e2, ..] => (s1, e1, s2, e2),
+                _ => unreachable!(),
+            };
+
+            let range1 = Range {
+                start: s1,
+                end: e1,
+            };
+            let range2 = Range {
+                start: s2,
+                end: e2,
+            };
+            return (range1, range2);
+        })
+        .map(|ranges| {
+            let (r1, r2) :(Range, Range) = (ranges.0, ranges.1);
+            return (r1.start <= r2.start && r1.end >= r2.end) || (r2.start <= r1.start && r2.end >= r1.end);
+        })
+        .filter(|x| *x)
         .collect()
         ;
 
-    for el in b.iter(){
-        print!("{}", el);
-    }
-
-    return vec!["A".to_string()];
-}
-
-pub fn problem1(f_name: &str) -> i32{
-    let split_values = read_file(f_name);
-
-    for vec in split_values.iter(){
-        print!("Length: {}", vec.len())
-    }
-    //
-    // let ranges = split_values.iter()
-    //     .map(|line| {
-    //         println!("String:? {}", line);
-    //         let split_ln: Vec<&str>= line.split(" ").collect();
-    //
-    //         let range1 = Range{
-    //             start: split_ln[0].parse::<i32>().unwrap(),
-    //             end: split_ln[1].parse::<i32>().unwrap()
-    //         };
-    //         let range2 = Range{
-    //             start: split_ln[3].parse::<i32>().unwrap(),
-    //             end: split_ln[4].parse::<i32>().unwrap()
-    //         };
-    //         return (range1, range2);
-    //     })
-    //     ;
-    // for el in ranges.into_iter(){
-    //     println!("Elements: {} and {}", el.0, el.1)
-    // }
-    return 0;
+    return filtered_results.len();
 }
