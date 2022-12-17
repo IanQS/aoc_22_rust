@@ -1,11 +1,18 @@
-// mod day1;
-// mod day2;
-// mod day3;
-mod day4;
+// use crate::day5::{Crates, Stack};
+
+use day5::stacks;
+
+
+mod day5;
 
 fn main() {
-    // let result = day3::part1_calculate_priorities("./data_folder/day_3.txt");
-    // println!("Day 3: Part 1: {}", result);
+    let mut my_stack_instance: stacks::Stack<i32> = stacks::Stack::new();
+    my_stack_instance.push(5);
+    my_stack_instance.push(4);
+    my_stack_instance.push(3);
+    println!("Normal print of our data: {my_stack_instance}");
 
-    println!("{}", day4::problem2("./data_folder/day_4.txt"));
+    let resp = my_stack_instance.pop();
+    println!("Stack after popping top-value: {my_stack_instance}");
+    println!("Response of pop: {:#?}", resp);
 }
