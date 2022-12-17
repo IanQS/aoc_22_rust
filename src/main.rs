@@ -1,53 +1,18 @@
+// use crate::day5::{Crates, Stack};
+
+use day5::stacks;
+
+
 mod day5;
 
-// mod day1;
-// mod day2;
-// mod day3;
-// mod day4;
-// mod day5;
-//
-// fn main() {
-// }
-mod my {
-    // A public struct with a public field of generic type `T`
-    pub struct OpenBox<T> {
-        pub contents: T,
-    }
-
-    // A public struct with a private field of generic type `T`
-    #[allow(dead_code)]
-    pub struct ClosedBox<T> {
-        contents: T,
-    }
-
-    impl<T> ClosedBox<T> {
-        // A public constructor method
-        pub fn new(contents: T) -> Self {
-            ClosedBox {
-                contents: contents,
-            }
-        }
-    }
-}
-
 fn main() {
-    // Public structs with public fields can be constructed as usual
-    let open_box = my::OpenBox { contents: "public information" };
+    let mut my_stack_instance: stacks::Stack<i32> = stacks::Stack::new();
+    my_stack_instance.push(5);
+    my_stack_instance.push(4);
+    my_stack_instance.push(3);
+    println!("Normal print of our data: {my_stack_instance}");
 
-    // and their fields can be normally accessed.
-    println!("The open box contains: {}", open_box.contents);
-
-    // Public structs with private fields cannot be constructed using field names.
-    // Error! `ClosedBox` has private fields
-    // let closed_box = my::ClosedBox { "classified information" };
-    // TODO ^ Try uncommenting this line
-
-    // However, structs with private fields can be created using
-    // public constructors
-    let _closed_box = my::ClosedBox::new("classified information");
-
-    // and the private fields of a public struct cannot be accessed.
-    // Error! The `contents` field is private
-    //println!("The closed box contains: {}", _closed_box.contents);
-    // TODO ^ Try uncommenting this line
+    let resp = my_stack_instance.pop();
+    println!("Stack after popping top-value: {my_stack_instance}");
+    println!("Response of pop: {:#?}", resp);
 }
